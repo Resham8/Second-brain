@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
 dotenv.config();
 
 import { z } from "zod";
-import { ContentModel, UserModel } from "./db";
+import { ContentModel, LinkModel, UserModel } from "./db";
 import { userMiddleware } from "./middleware";
 
 const uri = process.env.MONGOOSE_URI;
@@ -78,37 +79,38 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-app.post("/api/v1/content", userMiddleware, async (req, res) => {  
+app.post("/api/v1/content", userMiddleware, async (req, res) => {
   const link = req.body.link;
   const type = req.body.type;
   const title = req.body.title;
   const tags = [];
   //@ts-ignore
-  console.log(req.userId)
+  console.log(req.userId);
   await ContentModel.create({
-    link:link,
-    type:type,
+    link: link,
+    type: type,
     title: title,
-    tags : [],
+    tags: [],
     //@ts-ignore
-    userId: req.userId
-  })
+    userId: req.userId,
+  });
 
   res.json({
-    msg:"content added"
-  })
-  
+    msg: "content added",
+  });
 });
 
 app.get("/api/v1/content", userMiddleware, async (req, res) => {
   // @ts-ignore
   const userId = req.userId;
-  const existingContent = await ContentModel.find({userId}).populate("userId", "username");
+  const existingContent = await ContentModel.find({ userId }).populate(
+    "userId",
+    "username"
+  );
 
   res.json({
-    content:existingContent
-  })
-
+    content: existingContent,
+  });
 });
 
 app.delete("/api/v1/content", userMiddleware, async (req, res) => {
@@ -117,16 +119,36 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
   await ContentModel.deleteMany({
     contentId,
     // @ts-ignore
-    userId:req.userId
-  })
+    userId: req.userId,
+  });
 
   res.json({
-    msg: "Deleted"
-  })
+    msg: "Deleted",
+  });
 });
 
-app.post("/api/v1/brain/share", (req, res) => {
-  
+app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
+  try {
+    const isShare = req.body.share;
+    if (isShare) {
+      const uniqueId = uuidv4();
+      const baseUrl = `http://localhost:3000`;
+      const shareableLink = `${baseUrl}/${uniqueId}`;
+
+      const newLink = await LinkModel.create({
+        hash: uniqueId,
+        // @ts-ignore
+        userId: req.userId,
+      });
+
+      res.json({
+        link: shareableLink,
+      });
+    }
+    res.status(400).json({ message: "Share flag is missing or false." });
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 app.get("/api/v1/brain/:shareLink", (req, res) => {});
