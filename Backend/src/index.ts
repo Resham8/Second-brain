@@ -1,3 +1,11 @@
+declare global {
+  namespace Express {
+    export interface Request {
+      userId?: string;
+    }
+  }
+}
+
 import express from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
@@ -131,9 +139,19 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
   try {
     const isShare = req.body.share;
     if (isShare) {
+      const existingLink = await LinkModel.findOne({
+        userId: req.userId,
+      });
+
+      if (existingLink) {
+        res.json({
+          hash: existingLink.hash,
+        });
+        return;
+      }
+
       const uniqueId = uuidv4();
-      const baseUrl = `http://localhost:3000`;
-      const shareableLink = `${baseUrl}/${uniqueId}`;
+      const shareableLink = uniqueId;
 
       const newLink = await LinkModel.create({
         hash: uniqueId,
@@ -142,16 +160,57 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
       });
 
       res.json({
-        link: shareableLink,
+        hash: shareableLink,
+      });
+    } else {
+      await LinkModel.deleteOne({
+        userId: req.userId,
+      });
+
+      res.json({
+        msg: "Removed Link.",
       });
     }
+
     res.status(400).json({ message: "Share flag is missing or false." });
   } catch (error) {
     console.error(error);
   }
 });
 
-app.get("/api/v1/brain/:shareLink", (req, res) => {});
+app.get("/api/v1/brain/:shareLink", async (req, res) => {
+  const hash = req.params.shareLink;
+
+  const link = await LinkModel.findOne({
+    hash,
+  });
+
+  if (!link) {
+    res.status(411).json({
+      msg: "Sorry link not found",
+    });
+    return;
+  }
+  const content = await ContentModel.find({
+    userId: link.userId,
+  });
+
+  const user = await UserModel.findOne({
+    _id: link.userId,
+  });
+
+  if (!user) {
+    res.status(411).json({
+      msg: "user not found, error should ideally not happen",
+    });
+    return;
+  }
+
+  res.json({
+    username: user.username,
+    content: content,
+  });
+});
 
 app.listen(3000);
 
