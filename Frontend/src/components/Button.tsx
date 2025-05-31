@@ -7,6 +7,7 @@ interface ButtonProps {
   endIcon?: ReactElement;
   onClick?: () => void;
   fullWidth?: boolean;
+  loading?: boolean;
 }
 
 const variantStyles = {
@@ -15,19 +16,23 @@ const variantStyles = {
 };
 
 const defaultStyles =
-  "px-4 py-2 rounded-lg font-light flex items-center jusrify-center cursor-pointer";
+  "px-4 py-2 rounded-lg font-light flex items-center justify-center";
 
 export default function Button({
   variant,
   text,
   startIcon,
   onClick,
-  fullWidth
+  fullWidth,
+  loading,
 }: ButtonProps) {
   return (
     <button
-      className={`${variantStyles[variant]} ${defaultStyles} ${fullWidth ? " w-full flex justify-center items-center" : ""}`}
+      className={`${variantStyles[variant]} ${defaultStyles} ${
+        fullWidth ? " w-full flex justify-center items-center" : ""
+      } ${loading ? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
       onClick={onClick}
+      disabled={loading}
     >
       {startIcon && <span className="pr-2">{startIcon}</span>} {text}
     </button>
