@@ -7,7 +7,7 @@ interface ButtonProps {
   endIcon?: ReactElement;
   onClick?: () => void;
   fullWidth?: boolean;
-  loading?: boolean;
+  loading?:boolean;
 }
 
 const variantStyles = {
@@ -24,13 +24,11 @@ export default function Button({
   startIcon,
   onClick,
   fullWidth,
-  loading,
+  loading
 }: ButtonProps) {
   return (
     <button
-      className={`${variantStyles[variant]} ${defaultStyles} ${
-        fullWidth ? " w-full flex justify-center items-center" : ""
-      } ${loading ? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`${variantStyles[variant]} ${defaultStyles} ${fullWidth ? " w-full flex justify-center items-center" : ""} ${loading? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
       onClick={onClick}
       disabled={loading}
     >
