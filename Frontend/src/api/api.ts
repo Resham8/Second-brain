@@ -18,6 +18,16 @@ export async function signup(username: string, password: string) {
   });
 }
 
+export async function authUser({
+  username, password,isSignup}: {username: string; password: string;isSignup: boolean;}) {
+    console.log("from auth fn: "+isSignup)
+  if (isSignup) {
+    return await signup(username, password);
+  } else {
+    return await signin(username, password);
+  }
+}
+
 export async function addContent(
   title: string,
   link: string,
