@@ -1,23 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authUser } from "../api/api";
+import { useForm } from "react-hook-form";
 
 export default function Auth({ isSignup }: { isSignup: boolean }) {
-  const usernameRef = useRef<HTMLInputElement>();
-  const passwordRef = useRef<HTMLInputElement>();
   const navigate = useNavigate();
 
-  const username = usernameRef.current?.value;
-  const password = passwordRef.current?.value;
-  console.log(username, password);
-  const { mutate } = useMutation({
-    mutationFn: async () => {
-      const username = usernameRef.current?.value || "";
-      const password = passwordRef.current?.value || "";
+  const { register, handleSubmit,reset,formState: {errors} } = useForm<FormData>();
 
+  type FormData = {
+    username: string;
+    password: string;
+  };
+  // console.log(username, password);
+  const { mutate } = useMutation({
+    mutationFn: async ({ username, password }: FormData) => {
       if (!username || !password) {
         alert("Username and password are required!");
         return;
@@ -40,43 +39,52 @@ export default function Auth({ isSignup }: { isSignup: boolean }) {
     },
   });
 
-  // async function authentication() {
-  //   const username = usernameRef.current.value;
-  //   const password = passwordRef.current.value;
-  //   const url = isSignup
-  //     ? `${BACKEND_URL}/api/v1/signup`
-  //     : `${BACKEND_URL}/api/v1/signin`;
-  //   const response = await axios.post(url, {
-  //     username,
-  //     password,
-  //   });
-
-  //   if (!isSignup) {
-  //     const token = response.data.token;
-  //     localStorage.setItem("token", token);
-  //     navigate("/dashboard");
-  //   }
-
-  //   navigate("/signin");
-  //   alert("You have signed up!");
-  // }
+  const onSubmit = (data: FormData) => {
+    mutate(data);
+    reset();
+  };
 
   return (
     <div className="h-screen w-screen bg-gray-200 flex justify-center items-center">
-      <div className="bg-white rounded-xl border-gray-600 border min-w-48 p-8">
-        <Input ref={usernameRef} placeholder="Username" />
-        <Input ref={passwordRef} placeholder="Password" />
-
-        <div className="flex justify-center pt-4">
-          <Button
-            variant="primary"
-            text={`${isSignup ? "Sign Up" : "Sign In"}`}
-            fullWidth={true}
-            loading={false}
-            onClick={mutate}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="bg-white rounded-xl border-gray-600 border min-w-48 p-8">
+          <Input
+            register={register}
+            name="username"
+            placeholder="Username"
+            validations={{ required: "Username is required",
+                minLength: {
+                    value: 3,
+                    message: "Username must be at least 8 characters"
+                }
+             }}
+            error={errors.username?.message}
           />
+          <Input
+            register={register}
+            name="password"
+            placeholder="Password"
+            validations={{
+              required: "Password is required",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters",
+              },
+            }}
+            error={errors.password?.message}
+          />
+
+          <div className="flex justify-center pt-4">
+            <Button
+              variant="primary"
+              text={`${isSignup ? "Sign Up" : "Sign In"}`}
+              fullWidth={true}
+              loading={false}
+              type="submit"
+            />
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
