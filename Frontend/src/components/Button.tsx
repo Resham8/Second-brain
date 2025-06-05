@@ -1,4 +1,6 @@
-import type { ReactElement } from "react";
+import type { ButtonHTMLAttributes, ReactElement } from "react";
+
+type ButtonType = ButtonHTMLAttributes<HTMLButtonElement>['type'];
 
 interface ButtonProps {
   variant: "primary" | "secondary";
@@ -8,6 +10,7 @@ interface ButtonProps {
   onClick?: () => void;
   fullWidth?: boolean;
   loading?:boolean;
+  type?:ButtonType;
 }
 
 const variantStyles = {
@@ -24,13 +27,15 @@ export default function Button({
   startIcon,
   onClick,
   fullWidth,
-  loading
+  loading,
+  type
 }: ButtonProps) {
   return (
     <button
       className={`${variantStyles[variant]} ${defaultStyles} ${fullWidth ? " w-full flex justify-center items-center" : ""} ${loading? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
       onClick={onClick}
       disabled={loading}
+      type={type}
     >
       {startIcon && <span className="pr-2">{startIcon}</span>} {text}
     </button>
