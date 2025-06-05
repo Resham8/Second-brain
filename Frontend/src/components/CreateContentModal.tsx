@@ -1,31 +1,39 @@
 import { X } from "lucide-react";
 import Button from "./Button";
 import Input from "./Input";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ContentType } from "../config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addContent } from "../api/api";
-
+import { useForm } from "react-hook-form";
 
 // controlled component
 export default function CreateContentModal({ open, onClose }) {
   const queryClient = useQueryClient();
 
-  const titleRef = useRef<HTMLInputElement>();
-  const linkRef = useRef<HTMLInputElement>();
   const [type, setType] = useState(ContentType.Youtube);
 
-  const {mutate} = useMutation({
-    mutationFn: async () => {
-      const title = titleRef.current?.value || "";
-      const link = linkRef.current?.value || "";
+  type FormData = {
+    title: string;
+    link:string;
+  }
+
+  const {register, handleSubmit,reset} = useForm<FormData>();
+
+  const { mutate } = useMutation({
+    mutationFn: async ({title, link}:FormData) => {    
       await addContent(title, link, type);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["content"]});
-      onClose()
-    }
-  })
+      queryClient.invalidateQueries({ queryKey: ["content"] });
+      onClose();
+    },
+  });
+
+  const onSubmit = (data:FormData) => {
+    mutate(data)
+    reset()
+  }
 
   return (
     <div>
@@ -38,36 +46,42 @@ export default function CreateContentModal({ open, onClose }) {
                   <X />
                 </div>
               </div>
-              <div>
-                <Input placeholder={"Title"} ref={titleRef} />
-                <Input placeholder={"Link"} ref={linkRef} />
-              </div>
-              <div className="flex justify-center flex-col items-center">
-                <h1>Types</h1>
-                <div className="flex gap-2 p-4">
-                  <Button
-                    text="Youtube"
-                    variant={
-                      type === ContentType.Youtube ? "primary" : "secondary"
-                    }
-                    onClick={() => {
-                      setType(ContentType.Youtube);
-                    }}
-                  ></Button>
-                  <Button
-                    text="Twitter"
-                    variant={
-                      type === ContentType.Twitter ? "primary" : "secondary"
-                    }
-                    onClick={() => {
-                      setType(ContentType.Twitter);
-                    }}
-                  ></Button>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div>
+                  <Input placeholder={"Title"} register={register} name="title"/>
+                  <Input placeholder={"Link"}  register={register}  name="link"/>
                 </div>
-              </div>
-              <div className="flex justify-center">
-                <Button variant="primary" text="Submit" onClick={() => mutate()} />
-              </div>
+                <div className="flex justify-center flex-col items-center">
+                  <h1>Types</h1>
+                  <div className="flex gap-2 p-4">
+                    <Button
+                      text="Youtube"
+                      variant={
+                        type === ContentType.Youtube ? "primary" : "secondary"
+                      }
+                      onClick={() => {
+                        setType(ContentType.Youtube);
+                      }}
+                    ></Button>
+                    <Button
+                      text="Twitter"
+                      variant={
+                        type === ContentType.Twitter ? "primary" : "secondary"
+                      }
+                      onClick={() => {
+                        setType(ContentType.Twitter);
+                      }}
+                    ></Button>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <Button
+                    variant="primary"
+                    text="Submit"
+                    type="submit"
+                  />
+                </div>
+              </form>
             </span>
           </div>
         </div>
