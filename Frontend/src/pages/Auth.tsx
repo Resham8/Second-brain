@@ -4,11 +4,17 @@ import Input from "../components/Input";
 import { useMutation } from "@tanstack/react-query";
 import { authUser } from "../api/api";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../state/useAuthStore";
 
 export default function Auth({ isSignup }: { isSignup: boolean }) {
   const navigate = useNavigate();
-
-  const { register, handleSubmit,reset,formState: {errors} } = useForm<FormData>();
+  const { login } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>();
 
   type FormData = {
     username: string;
@@ -22,13 +28,15 @@ export default function Auth({ isSignup }: { isSignup: boolean }) {
         return;
       }
 
-      await authUser({ username, password, isSignup });
+      const token = await authUser({ username, password, isSignup });
+      return token;
     },
-    onSuccess: () => {
+    onSuccess: (token) => {
       if (isSignup) {
         alert("You have signed up!");
         navigate("/signin");
       } else {
+        login(token);
         alert("You have signed in!");
         navigate("/dashboard");
       }
@@ -52,12 +60,13 @@ export default function Auth({ isSignup }: { isSignup: boolean }) {
             register={register}
             name="username"
             placeholder="Username"
-            validations={{ required: "Username is required",
-                minLength: {
-                    value: 3,
-                    message: "Username must be at least 8 characters"
-                }
-             }}
+            validations={{
+              required: "Username is required",
+              minLength: {
+                value: 3,
+                message: "Username must be at least 8 characters",
+              },
+            }}
             error={errors.username?.message}
           />
           <Input

@@ -8,7 +8,8 @@ export async function signin(username: string, password: string) {
   });
   const token = response.data.token;
   //  JSON.stringify(response.data.token, null, 2)
-  localStorage.setItem("token", token);
+  // localStorage.setItem("token", token);
+  return token
 }
 
 export async function signup(username: string, password: string) {
