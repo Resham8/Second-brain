@@ -32,7 +32,8 @@ export async function authUser({
 export async function addContent(
   title: string,
   link: string,
-  type: ContentType
+  type: ContentType,
+  tags: string[]
 ) {
   await axios.post(
     `${BACKEND_URL}/api/v1/content`,
@@ -40,6 +41,7 @@ export async function addContent(
       link,
       title,
       type,
+      tags
     },
     {
       headers: {
