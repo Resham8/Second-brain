@@ -10,10 +10,7 @@ import { getBrainContent, getShareLink } from "../api/api";
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const {
-    data: contents,
-    isLoading,
-  } = useQuery({
+  const { data: contents, isLoading } = useQuery({
     queryKey: ["content"],
     queryFn: () => getBrainContent(),
   });
@@ -83,16 +80,17 @@ function Dashboard() {
             onClick={() => mutate()}
           />
         </div>
-        <div className="flex gap-5">
+        <div className="columns-3 gap-4 pt-5">
           {contents?.map(({ type, link, title, _id }) => (
-            <Card
-              key={_id}
-              title={title}
-              link={link}
-              type={type}
-              contentId={_id}
-              isShare={false}
-            />
+            <div key={_id} className="break-inside-avoid">
+              <Card
+                title={title}
+                link={link}
+                type={type}
+                contentId={_id}
+                isShare={false}
+              />
+            </div>
           ))}
         </div>
       </div>
