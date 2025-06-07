@@ -1,4 +1,4 @@
-import { BrainCircuit, Twitter, Youtube } from "lucide-react";
+import { BrainCircuit, HashIcon, Instagram, Link, Twitter, Youtube } from "lucide-react";
 import SidebarItem from "./SidebarItem";
 
 export default function Sidebar() {
@@ -13,6 +13,9 @@ export default function Sidebar() {
       <div className="pt-4 pl-4">
         <SidebarItem text="Tweets" icon={<Twitter />} />
         <SidebarItem text="Youtube" icon={<Youtube />} />
+        <SidebarItem text="Instagram" icon={<Instagram/>}/>
+        <SidebarItem text="Links" icon={<Link/>}/>
+        <SidebarItem text="tags" icon={<HashIcon/>}/>
       </div>
     </div>
   );
