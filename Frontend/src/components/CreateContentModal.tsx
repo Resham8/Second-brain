@@ -80,7 +80,7 @@ export default function CreateContentModal({ open, onClose }) {
                   />
                   <Input placeholder={"Link"} register={register} name="link" />
                 </div>
-                <div className="flex flex-col ">
+                {/* <div className="flex flex-col ">
                   <h1 className="ml-2.5">Types</h1>
                   <div className="flex gap-2 p-4">
                     <Button
@@ -120,7 +120,7 @@ export default function CreateContentModal({ open, onClose }) {
                       }}
                     ></Button>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex flex-col  justify-center gap-1 flex-wrap">
                   <h1 className="ml-2.5">Tags</h1>
                   <Input
