@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ShareBrain from "./pages/ShareBrain";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,6 +6,7 @@ import Auth from "./pages/Auth";
 import { useEffect } from "react";
 import { useAuth } from "./state/useAuthStore";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Home/>}/>
           <Route path="/signup" element={<Auth isSignup={true} />} />
           <Route path="/signin" element={<Auth isSignup={false} />} />
           <Route element={<ProtectedRoute />}>
