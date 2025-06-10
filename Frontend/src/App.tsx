@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useAuth } from "./state/useAuthStore";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
+import Toast from "./components/Toast";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
           </Route>
           <Route path="/share/:shareLink" element={<ShareBrain />} />
         </Routes>
+        <Toast/>
       </BrowserRouter>
     </QueryClientProvider>
   );
