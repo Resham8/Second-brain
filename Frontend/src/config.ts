@@ -12,4 +12,5 @@ export type BrainContent = {
   title: string;
   link: string;
   type: ContentType;
+  tags: string[];
 };
