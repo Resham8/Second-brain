@@ -9,13 +9,13 @@ interface ButtonProps {
   endIcon?: ReactElement;
   onClick?: () => void;
   fullWidth?: boolean;
-  loading?:boolean;
-  type?:ButtonType;
+  loading?: boolean;
+  type?: ButtonType;
 }
 
 const variantStyles = {
-  primary: "bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl",
-  secondary: "bg-purple-200 hover:bg-purple-300 text-purple-600 shadow-md hover:shadow-lg",
+  primary: "bg-purple-600 hover:bg-purple-500 text-white shadow-lg hover:shadow-xl",
+  secondary: "bg-purple-200 hover:bg-purple-tags text-purple-600 shadow-md hover:shadow-lg",
 };
 
 const defaultStyles =
@@ -32,7 +32,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`${variantStyles[variant]} ${defaultStyles} ${fullWidth ? " w-full flex justify-center items-center" : ""} ${loading? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`${variantStyles[variant]} ${defaultStyles} ${fullWidth ? " w-full flex justify-center items-center" : ""} ${loading ? " opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
       onClick={onClick}
       disabled={loading}
       type={type}

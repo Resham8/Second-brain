@@ -1,13 +1,15 @@
-import { NotepadText, Share2, Trash2 } from "lucide-react";
+import { Share2, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteContent } from "../api/api";
 import type { ContentType } from "../config";
 import { useEffect } from "react";
+import { useToastState } from "../state/useToastStore";
 
 interface CardProps {
   title: string;
   link: string;
   type: ContentType;
+  tags: string[];
   contentId: string;
   isShare: boolean;
 }
@@ -17,9 +19,12 @@ export default function Card({
   link,
   type,
   contentId,
+  tags,
   isShare,
 }: CardProps) {
   const queryClient = useQueryClient();
+
+  const showToast = useToastState((state) => state.showToast);
 
   useEffect(() => {
     if (type === "instagram") {
@@ -38,7 +43,8 @@ export default function Card({
     mutationFn: () => deleteContent(contentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["content"] });
-      alert("deleted Successfully");
+      // alert("deleted Successfully");
+      showToast({ message: "Deleted Successfully", type: "success" });
     },
   });
 
@@ -74,33 +80,52 @@ export default function Card({
     }
   };
 
+  const getTypeIcon = (type: ContentType) => {
+    switch (type) {
+      case "youtube":
+        return "🎥";
+      case "instagram":
+        return "📸";
+      case "twitter":
+        return "🐦";
+      case "website":
+        return "🌐";
+      default:
+        return "📄";
+    }
+  };
+
   const transformedUrl = transformUrl({ url: link, type });
 
   return (
-    <div className="p-4 bg-white rounded-md outline-slate-100 outline-2 max-w-96 w-fit h-fit mb-3">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-3 font-medium">
-          <div className="text-gray-500">
-            <NotepadText />
+    <div className="p-5 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex gap-3 font-medium items-center">
+          <div className="text-gray-500 bg-gray-50 p-2 rounded-lg ">
+            <span className="text-base">{getTypeIcon(type)}</span>
           </div>
-          {title}
+          <span className="text-gray-900 text-sm">{title}</span>
         </div>
         {!isShare && (
           <div className="flex gap-3 text-gray-500 items-center">
-            <a href={link} className="cursor-pointer">
-              <Share2 />
+            <a
+              href={link}
+              className="cursor-pointer hover:text-blue-600 transition-colors"
+            >
+              <Share2 size={18} />
             </a>
-            <a onClick={() => mutate()} className="cursor-pointer">
-              <Trash2 />
+            <a
+              onClick={() => mutate()}
+              className="cursor-pointer hover:text-red-600 transition-colors"
+            >
+              <Trash2 size={18} />
             </a>
           </div>
         )}
       </div>
-      <div className="pt-4">
+      <div className="">
         {type === "youtube" && (
-          <div
-            className={`w-full overflow-hidden rounded-md`}
-          >
+          <div className="w-full overflow-hidden rounded-lg mb-4 aspect-video">
             <iframe
               className="top-0 left-0 w-full h-full"
               src={transformedUrl}
@@ -115,10 +140,9 @@ export default function Card({
 
         {type === "instagram" && (
           <blockquote
-            className="instagram-media "
+            className="instagram-media"
             data-instgrm-permalink={link}
             data-instgrm-version="13"
-
           >
             {/* data-instgrm-captioned */}
             <div className="instagram-container">
@@ -128,7 +152,7 @@ export default function Card({
                   paddingBottom: "0",
                   width: "100%",
                   display: "block",
-                  whiteSpace: "nowrap", 
+                  whiteSpace: "nowrap",
                   overflow: "hidden",
                   wordBreak: "break-word",
                   background: "#ffffff",
@@ -146,31 +170,26 @@ export default function Card({
 
         {type == "twitter" && (
           <blockquote className="twitter-tweet">
-            <a href={link.replace("x.com", "twitter.com")}></a>
+            <a href={transformedUrl}></a>
           </blockquote>
         )}
 
         {type === "website" && (
           <div className="border rounded-md overflow-hidden bg-gray-50">
-            <iframe
-              src={link}
-              className="w-full h-96"
-              frameBorder="0"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-            <div className="p-3 bg-white border-t">
-              <a
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm"
-              >
-                {new URL(link).hostname}
-              </a>
-            </div>
+            <p>{link}</p>
           </div>
         )}
+
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, index) => (
+            <span
+              key={index}
+              className="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs rounded-full font-medium border border-blue-200"
+            >
+              #{tag.title}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
