@@ -19,7 +19,7 @@ const variantStyles = {
 };
 
 const defaultStyles =
-  "px-6 py-3 rounded-lg font-medium flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95";
+  "px-6 py-3 rounded-lg font-medium flex items-center justify-center transition-all duration-300 transform hover:scale-101 active:scale-95";
 
 export default function Button({
   variant,
