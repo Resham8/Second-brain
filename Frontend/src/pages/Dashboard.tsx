@@ -1,14 +1,15 @@
-import { PlusIcon, Share2 } from "lucide-react";
-import { useState } from "react";
+import { LogOut, Share2 } from "lucide-react";
 import Sidebar from "../components/Sidebar";
-import CreateContentModal from "../components/CreateContentModal";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBrainContent, getShareLink } from "../api/api";
+import { useAuth } from "../state/useAuthStore";
 
-function Dashboard() {
-  const [modalOpen, setModalOpen] = useState(false);
+function Dashboard() {  
+
+  const logout = useAuth((state) => state.logout )
+
 
   const { data: contents, isLoading } = useQuery({
     queryKey: ["content"],
@@ -29,26 +30,20 @@ function Dashboard() {
 
   if (isLoading) {
     <div>
-      <Sidebar />
-      <div className="p-5 ml-72 min-h-screen bg-gray-200">
-        <CreateContentModal
-          open={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        />
+      <Sidebar isShare={false} />
+      <div className="p-5 ml-72 min-h-screen bg-gray-200">        
         <div className="flex justify-end gap-4">
-          <Button
-            variant="primary"
-            text="Add Content"
-            startIcon={<PlusIcon size={18} />}
-            onClick={() => setModalOpen(true)}
-          />
           <Button
             variant="secondary"
             text={isPending ? "Sharing..." : "Share Brain"}
             startIcon={<Share2 size={18} />}
             onClick={() => mutate()}
+          />
+          <Button
+            variant="primary"
+            text="Logout"
+            startIcon={<LogOut size={18} />}
+            
           />
         </div>
         <div>Loading.....</div>
@@ -58,26 +53,22 @@ function Dashboard() {
 
   return (
     <div>
-      <Sidebar />
+      <Sidebar isShare={false} />
       <div className="p-5 ml-72 min-h-screen bg-gray-200">
-        <CreateContentModal
-          open={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        />
+      
         <div className="flex justify-end gap-4">
-          <Button
-            variant="primary"
-            text="Add Content"
-            startIcon={<PlusIcon size={18} />}
-            onClick={() => setModalOpen(true)}
-          />
+          
           <Button
             variant="secondary"
             text={isPending ? "Sharing..." : "Share Brain"}
             startIcon={<Share2 size={18} />}
             onClick={() => mutate()}
+          />
+          <Button
+            variant="primary"
+            text="Logout"
+            startIcon={<LogOut size={18} />}
+            onClick={logout}
           />
         </div>
         <div className="columns-3 gap-5 pt-5">

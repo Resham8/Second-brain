@@ -13,19 +13,21 @@ function ShareBrain() {
 
   return (
     <div>
-      <Sidebar />
+      <Sidebar isShare={true}/>
       <div className="p-5 ml-72 min-h-screen bg-gray-200">
-        <div className="flex gap-5">
-          {contents?.map(({ type, link, title, _id }) => (
-            <Card
-              key={_id}
-              title={title}
-              link={link}
-              type={type}
-              isShare={true}
-            />
+        <div className="columns-3 gap-5 pt-5">
+          {contents?.map(({ type, link, title, _id, tags }) => (
+            <div key={_id} className="break-inside-avoid">
+              <Card
+                title={title}
+                link={link}
+                type={type}
+                contentId={_id}
+                tags={tags}
+                isShare={false}
+              />
+            </div>
           ))}
-
         </div>
       </div>
     </div>

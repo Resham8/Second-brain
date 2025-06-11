@@ -1,22 +1,90 @@
-import { BrainCircuit, HashIcon, Instagram, Link, Twitter, Youtube } from "lucide-react";
+import {
+  Hash,
+  Instagram,
+  Link2,
+  PlusIcon,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
+import { useState } from "react";
+import Button from "./Button";
+import CreateContentModal from "./CreateContentModal";
 
-export default function Sidebar() {
+export default function Sidebar({isShare}:{isShare:boolean}) {
+  const [activeItem, setActiveItem] = useState("All Content");
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const menuItems = [
+    { text: "All Content", icon: <Hash size={20} /> },
+    { text: "Tweets", icon: <Twitter size={20} /> },
+    { text: "Youtube", icon: <Youtube size={20} /> },
+    { text: "Instagram", icon: <Instagram size={20} />},
+    { text: "Links", icon: <Link2 /> },
+    { text: "Tags", icon: <Hash size={20} /> },
+  ];
+
   return (
-    <div className="h-screen bg-white border-r border-gray-300 w-72 fixed left-0 top-0 pl-6">
-        <div className="flex text-2xl font-semibold pt-8 items-center">
-            <div className="pr-2 text-purple-600">
-                <BrainCircuit size={29} />
-            </div>            
-            Brainly
+    <div className="h-screen bg-gradient-to-b from-white to-gray-50 border-r border-gray-200 w-72 fixed left-0 top-0 flex flex-col shadow-xl">      
+      <div className="px-6 pt-8 pb-6">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center shadow-lg">
+              <img
+                src="/second-brain-2.png"
+                alt="Brainly"
+                className="w-8 h-8 object-contain"
+              />
+            </div>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Brainly</h1>
+            <p className="text-sm text-gray-500">Your Second Brain</p>
+          </div>
         </div>
-      <div className="pt-4 pl-4">
-        <SidebarItem text="Tweets" icon={<Twitter />} />
-        <SidebarItem text="Youtube" icon={<Youtube />} />
-        <SidebarItem text="Instagram" icon={<Instagram/>}/>
-        <SidebarItem text="Links" icon={<Link/>}/>
-        <SidebarItem text="tags" icon={<HashIcon/>}/>
       </div>
+
+      
+      <div className="flex-1 px-2">
+        <div className="mb-6">
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-3">
+            Content Types
+          </h3>
+          <div className="space-y-1">
+            {menuItems.map((item) => (
+              <div key={item.text} onClick={() => setActiveItem(item.text)}>
+                <SidebarItem
+                  text={item.text}
+                  icon={item.icon}
+                  isActive={activeItem === item.text}                  
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <CreateContentModal
+          open={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+          }}
+        />
+        
+        {!isShare && (<div className="mb-6">
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-3">
+            Quick Actions
+          </h3>
+          <Button
+            variant="primary"
+            text="Add Content"
+            startIcon={<PlusIcon size={18} />}
+            fullWidth={true}
+            onClick={() => setModalOpen(true)}
+          />
+        </div>)}
+      </div>
+
+      
+  
     </div>
   );
 }
