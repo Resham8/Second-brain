@@ -1,20 +1,31 @@
 import { Router } from "express";
 import { userMiddleware } from "../Middleware/middleware";
-import { ContentModel } from "../db";
+import { ContentModel, TagModel } from "../db";
 
 const contentRouter = Router();
 
 contentRouter.post("/api/v1/content", userMiddleware, async (req, res) => {
-  const link = req.body.link;
-  const type = req.body.type;
-  const title = req.body.title;
-  const tags = [];
+  const {link, type, title, tags} = req.body;
+
+  const tagId = [];
+
+  for (const tagTile of tags) {
+    let tag = await TagModel.findOne({ title: tagTile });
+
+    if (!tag) {
+      tag = await TagModel.create({
+        title: tagTile,
+      });
+    }
+
+    tagId.push(tag._id);
+  }
 
   await ContentModel.create({
     link: link,
     type: type,
     title: title,
-    tags: [],
+    tags: tagId,
     userId: req.userId,
   });
 
@@ -27,8 +38,8 @@ contentRouter.get("/api/v1/content", userMiddleware, async (req, res) => {
   const userId = req.userId;
   const existingContent = await ContentModel.find({ userId }).populate(
     "userId",
-    "username"
-  );
+    "username",
+  ).populate("tags","title");
 
   res.json({
     content: existingContent,

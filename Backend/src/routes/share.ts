@@ -62,7 +62,7 @@ shareRouter.get("/api/v1/brain/:shareLink", async (req, res) => {
   }
   const content = await ContentModel.find({
     userId: link.userId,
-  }).populate("userId", "username");
+  }).populate("userId", "username").populate("tags","title");
 
   const user = await UserModel.findOne({
     _id: link.userId,

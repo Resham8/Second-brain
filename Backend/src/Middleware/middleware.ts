@@ -26,7 +26,7 @@ export const userMiddleware = (
       if (decoded) {
         // @ts-ignore
         req.userId = decoded.userId;
-        console.log("from middleware ",decoded)        
+        // console.log("from middleware ",decoded)        
         next();
       } else {
         res.status(403).json({ msg: "You are not logged In.." });
