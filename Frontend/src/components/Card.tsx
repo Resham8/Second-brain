@@ -174,8 +174,8 @@ export default function Card({
           </blockquote>
         )}
 
-        {type === "website" && (
-          <div className="border rounded-md overflow-hidden bg-gray-50">
+       {type === "website" && (
+          <div className="rounded-md  outline-gray-300 outline-1 overflow-hidden bg-gray-50 p-4 mb-2.5">
             <p>{link}</p>
           </div>
         )}
