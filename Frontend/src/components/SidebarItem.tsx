@@ -1,10 +1,9 @@
 import { useState, type ReactElement } from "react";
 
-export default function SidebarItem({ text, icon, isActive = false, count = null }:{
+export default function SidebarItem({ text, icon, isActive = false }:{
   text:string,
   icon:ReactElement,
   isActive:boolean,
-  count:number | null
 }) {
   const [isHovered, setIsHovered] = useState(false);
   

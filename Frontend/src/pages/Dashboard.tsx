@@ -5,11 +5,11 @@ import Card from "../components/Card";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBrainContent, getShareLink } from "../api/api";
 import { useAuth } from "../state/useAuthStore";
+import { useFilterStore } from "../state/useFilterStore";
 
-function Dashboard() {  
-
-  const logout = useAuth((state) => state.logout )
-
+function Dashboard() {
+  const logout = useAuth((state) => state.logout);
+  const { activeType } = useFilterStore();
 
   const { data: contents, isLoading } = useQuery({
     queryKey: ["content"],
@@ -28,10 +28,15 @@ function Dashboard() {
     },
   });
 
+  const filteredContents =
+    activeType === "All Content"
+      ? contents
+      : contents?.filter((item) => item.type === activeType);
+
   if (isLoading) {
     <div>
       <Sidebar isShare={false} />
-      <div className="p-5 ml-72 min-h-screen bg-gray-200">        
+      <div className="p-5 ml-72 min-h-screen bg-gray-200">
         <div className="flex justify-end gap-4">
           <Button
             variant="secondary"
@@ -43,7 +48,6 @@ function Dashboard() {
             variant="primary"
             text="Logout"
             startIcon={<LogOut size={18} />}
-            
           />
         </div>
         <div>Loading.....</div>
@@ -55,9 +59,7 @@ function Dashboard() {
     <div>
       <Sidebar isShare={false} />
       <div className="p-5 ml-72 min-h-screen bg-gray-200">
-      
         <div className="flex justify-end gap-4">
-          
           <Button
             variant="secondary"
             text={isPending ? "Sharing..." : "Share Brain"}
@@ -72,7 +74,7 @@ function Dashboard() {
           />
         </div>
         <div className="columns-3 gap-5 pt-5">
-          {contents?.map(({ type, link, title, _id, tags }) => (
+          {filteredContents?.map(({ type, link, title, _id, tags }) => (
             <div key={_id} className="break-inside-avoid">
               <Card
                 title={title}

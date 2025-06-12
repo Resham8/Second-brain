@@ -10,18 +10,19 @@ import SidebarItem from "./SidebarItem";
 import { useState } from "react";
 import Button from "./Button";
 import CreateContentModal from "./CreateContentModal";
+import { useFilterStore } from "../state/useFilterStore";
+import { ContentType } from "../config";
 
 export default function Sidebar({isShare}:{isShare:boolean}) {
-  const [activeItem, setActiveItem] = useState("All Content");
+  const { activeType, setActiveType } = useFilterStore();
   const [modalOpen, setModalOpen] = useState(false);
 
   const menuItems = [
     { text: "All Content", icon: <Hash size={20} /> },
-    { text: "Tweets", icon: <Twitter size={20} /> },
-    { text: "Youtube", icon: <Youtube size={20} /> },
-    { text: "Instagram", icon: <Instagram size={20} />},
-    { text: "Links", icon: <Link2 /> },
-    { text: "Tags", icon: <Hash size={20} /> },
+    { text: ContentType.Twitter, icon: <Twitter size={20} /> },
+    { text: ContentType.Youtube, icon: <Youtube size={20} /> },
+    { text: ContentType.Instagram, icon: <Instagram size={20} /> },
+    { text: ContentType.Website, icon: <Link2 /> },
   ];
 
   return (
@@ -52,11 +53,11 @@ export default function Sidebar({isShare}:{isShare:boolean}) {
           </h3>
           <div className="space-y-1">
             {menuItems.map((item) => (
-              <div key={item.text} onClick={() => setActiveItem(item.text)}>
+              <div key={item.text} onClick={() => setActiveType(item.text)}>
                 <SidebarItem
                   text={item.text}
                   icon={item.icon}
-                  isActive={activeItem === item.text}                  
+                  isActive={activeType === item.text}                  
                 />
               </div>
             ))}
