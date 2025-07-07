@@ -5,10 +5,10 @@ function SearchInput() {
   const searchItem = useFilterStore((state) => state.searchItem);
   const setSearchItem = useFilterStore((state) => state.setSearchItem);
   return (
-    <div className="relative w-full max-w-md p-2">
+    <div className="relative w-full max-w-md p-2 z-0">
       <div className="relative">
         <Search
-          className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 z-10"
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 z-0"
           size={20}
         />
         <input
@@ -20,7 +20,7 @@ function SearchInput() {
         />
         {searchItem && (
           <button
-            className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors z-10 cursor-pointer"
+            className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors z-0 cursor-pointer"
             onClick={() => setSearchItem("")}
           >
             <X size={18} />

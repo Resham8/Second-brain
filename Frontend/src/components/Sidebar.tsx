@@ -13,7 +13,7 @@ import CreateContentModal from "./CreateContentModal";
 import { useFilterStore } from "../state/useFilterStore";
 import { ContentType } from "../config";
 
-export default function Sidebar({isShare}:{isShare:boolean}) {
+export default function Sidebar({ isShare }: { isShare: boolean }) {
   const { activeType, setActiveType } = useFilterStore();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -26,7 +26,7 @@ export default function Sidebar({isShare}:{isShare:boolean}) {
   ];
 
   return (
-    <div className="h-screen bg-gradient-to-b from-white to-gray-50 border-r border-gray-200 w-72 fixed left-0 top-0 flex flex-col shadow-xl">      
+    <div className="h-screen bg-gradient-to-b from-white to-gray-50 border-r border-gray-200 w-72 fixed left-0 top-0 flex flex-col shadow-xl">
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -45,7 +45,6 @@ export default function Sidebar({isShare}:{isShare:boolean}) {
         </div>
       </div>
 
-      
       <div className="flex-1 px-2">
         <div className="mb-6">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-3">
@@ -57,35 +56,35 @@ export default function Sidebar({isShare}:{isShare:boolean}) {
                 <SidebarItem
                   text={item.text}
                   icon={item.icon}
-                  isActive={activeType === item.text}                  
+                  isActive={activeType === item.text}
                 />
               </div>
             ))}
           </div>
         </div>
-        <CreateContentModal
-          open={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        />
-        
-        {!isShare && (<div className="mb-6">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-3">
-            Quick Actions
-          </h3>
-          <Button
-            variant="primary"
-            text="Add Content"
-            startIcon={<PlusIcon size={18} />}
-            fullWidth={true}
-            onClick={() => setModalOpen(true)}
-          />
-        </div>)}
+
+        {!isShare && (
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-3">
+              Quick Actions
+            </h3>
+            <Button
+              variant="primary"
+              text="Add Content"
+              startIcon={<PlusIcon size={18} />}
+              fullWidth={true}
+              onClick={() => setModalOpen(true)}
+            />
+          </div>
+        )}
       </div>
 
-      
-  
+      <CreateContentModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
     </div>
   );
 }
