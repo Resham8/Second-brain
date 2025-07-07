@@ -113,7 +113,7 @@ export default function CreateContentModal({ open, onClose }:{
                 </div>
               </div>
 
-              {/* Tags Section */}
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tags
@@ -128,7 +128,7 @@ export default function CreateContentModal({ open, onClose }:{
                 </p>
               </div>
 
-              {/* Submit Button */}
+              
               <div className="pt-4 border-t border-gray-100">
                 <Button
                   variant="primary"
